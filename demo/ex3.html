@@ -38,7 +38,7 @@ Player.camera.position.z = 300;
 
 Player.controls = new THREE.TrackballControls(Player.camera, 
                                               Player.container);
-Player.controls.target.y = 100;
+//Player.controls.target.y = 100;
 
 // Create a renderer with Antialiasing
 Player.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -80,6 +80,10 @@ Player.loadModel = function(){
 												         wireframe: true});
 		}
 	  });
+	  
+	  object.position.set( 0, -100, 0 );
+	  object.rotation.set( 3.14*1.5, 0, 0 );
+	
 	  Player.scene.add(object);    
 	});
 }
@@ -93,6 +97,8 @@ Player.textureLoader.load("Kangaroo_diff.jpg", function(texture){
 	Player.texture = texture;
 	Player.loadModel();
 	
+	
+	  
 	/*
 	let geometry = new THREE.SphereGeometry(100,50,50);
 	let material = new THREE.MeshPhongMaterial({map: texture,

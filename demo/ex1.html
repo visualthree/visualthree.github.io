@@ -33,16 +33,18 @@ Player.scene = new THREE.Scene();
 // Create a basic perspective camera
 Player.camera = new THREE.PerspectiveCamera( 45, 
                           Player.size.width/Player.size.height, 
-						  0.1, 5000 ); // near, far
+						  0.1, 10000 ); // near, far
 
 //Player.camera.lookAt(new THREE.Vector3(0,700,0));
 Player.camera.position.z = 500;
+//Player.camera.rotation.x = 150;
 
 
 Player.controls = new THREE.TrackballControls(Player.camera, 
                                               Player.container);
 
-Player.controls.target.y = 200;
+//Player.controls.target.y = 200;
+
 											  
 // Create a renderer with Antialiasing
 Player.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -81,6 +83,9 @@ Player.loadModel = function(){
 		  child.material.map = Player.texture;  
 		}
 	  });
+	  //object.translateOnAxis(0, 0, 0);
+	  object.position.set( 0, -100, 0 );
+	  object.rotation.set( 3.14*1.5, 0, 0 );
 	  Player.scene.add(object);    
 	});
 }
