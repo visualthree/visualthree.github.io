@@ -1,0 +1,108 @@
+<html><head></head><body>
+
+<div id="webgl-player" style='width:100vw;height:100vh;'> <div>
+
+<script src="three.min.js"></script>
+<script src="TrackballControls.js"></script>
+<script src="OBJLoader.js"></script>
+
+<script>
+
+// Three-WebGL Player
+Player = {
+  container             : 0,
+  size                  : {},
+  scene                 : 0,
+  camera                : 0,
+  controls              : 0,
+  renderer              : 0,
+  textureLoader         : 0,
+  texture               : 0,
+  loadModel             : 0, // inline methods (object)
+  animate				: 0
+};
+
+Player.container = document.getElementById('webgl-player');
+
+Player.size = {width: Player.container.offsetWidth,
+               height: Player.container.offsetHeight};
+			   
+// Create an empty scene
+Player.scene = new THREE.Scene();
+
+// Create a basic perspective camera
+Player.camera = new THREE.PerspectiveCamera( 45, 
+                          Player.size.width/Player.size.height, 
+						  0.1, 5000 ); // near, far
+
+//Player.camera.lookAt(new THREE.Vector3(0,700,0));
+Player.camera.position.z = 500;
+
+
+Player.controls = new THREE.TrackballControls(Player.camera, 
+                                              Player.container);
+
+Player.controls.target.y = 200;
+											  
+// Create a renderer with Antialiasing
+Player.renderer = new THREE.WebGLRenderer({antialias:true});
+
+// Configure renderer clear color
+Player.renderer.setClearColor("#FFFFFF");
+
+// Configure renderer size
+Player.renderer.setSize( window.innerWidth, 
+                         window.innerHeight );
+
+// Append Renderer (e.g., container in browser)
+Player.container.appendChild( Player.renderer.domElement );
+
+// ------------------------------------------------
+// FUN STARTS HERE
+// ------------------------------------------------
+
+// Basic lighting
+Player.light = new THREE.AmbientLight();
+Player.scene.add( Player.light );
+
+/*
+// Hack for local testing/file loading in browser
+/> python -m http.server 8000 --bind 127.0.0.1 
+
+Run this command from inside a directory, see the results by accessing http://localhost:8000/
+*/
+
+// Model loader (automatically adds to the scene)
+Player.loadModel = function(){
+	objectLoader = new THREE.OBJLoader();
+	objectLoader.load("kangaroo.obj", function(object){
+	  object.traverse(function(child){
+		if (child instanceof THREE.Mesh){
+		  child.material.map = Player.texture;  
+		}
+	  });
+	  Player.scene.add(object);    
+	});
+}
+
+// Load texture, after loading is done, load model
+// and apply texture
+Player.textureLoader = new THREE.TextureLoader();
+Player.textureLoader.load("Kangaroo_diff.jpg", function(texture){
+	Player.texture = texture;
+	Player.loadModel();
+});
+
+// Animation/Render Loop
+Player.animate = function () {
+  requestAnimationFrame( Player.animate );
+  // Update any input
+  Player.controls.update();
+  // Render the scene
+  Player.renderer.render(Player.scene, Player.camera);
+};
+
+Player.animate();
+</script>
+
+</body></html>
